@@ -1,12 +1,10 @@
 package com.laioffer.cmtyMgmtSys.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -17,6 +15,9 @@ public class User implements UserDetails {
     private static final long serialVersionUID = 2681531852204068105L;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String emailId;
 
     private String password;

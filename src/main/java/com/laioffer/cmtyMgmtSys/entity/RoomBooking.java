@@ -11,7 +11,6 @@ import java.util.Date;
 @Table(name = "roombooking")
 @EntityListeners(AuditingEntityListener.class)
 public class RoomBooking implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;

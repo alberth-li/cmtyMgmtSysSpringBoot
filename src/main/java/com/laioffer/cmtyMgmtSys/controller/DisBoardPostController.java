@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -25,4 +26,10 @@ public class DisBoardPostController {
     public DisBoardPost addPost(@RequestBody DisBoardPost post){
         return postService.addPost(post);
     }
+    /*
+    @GetMapping("/getPosts{id}")
+    public DisBoardPost getPostById(@RequestParam("id") int id){
+        Optional<DisBoardPost> optionalDisBoardPost = postService.
+    }
+     */
 }
