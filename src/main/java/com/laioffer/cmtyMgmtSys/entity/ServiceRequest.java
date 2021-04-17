@@ -12,7 +12,6 @@ import java.util.Date;
 @Table(name = "servicerequest")
 @EntityListeners(AuditingEntityListener.class)
 public class ServiceRequest implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -30,7 +29,7 @@ public class ServiceRequest implements Serializable {
     @CreatedDate
     private Date timeCreated;
 
-    @Column(nullable = true, updatable = false)
+    @Column(updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date timeCompleted;
 
@@ -38,8 +37,7 @@ public class ServiceRequest implements Serializable {
     @JoinColumn(name = "apt_ID")
     private Apartment apt;
 
-    @ManyToOne
-    @JoinColumn(name = "resident_ID")
+    @CreatedBy
     private Resident requester;
 
     public int getId() {

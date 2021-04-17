@@ -2,6 +2,7 @@ package com.laioffer.cmtyMgmtSys.controller;
 
 import com.laioffer.cmtyMgmtSys.entity.DisBoardPost;
 import com.laioffer.cmtyMgmtSys.dao.DisBoardPostRepository;
+import com.laioffer.cmtyMgmtSys.service.DisBoardPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,17 +12,17 @@ import java.util.List;
 @RequestMapping("/api")
 public class DisBoardPostController {
     @Autowired
-    DisBoardPostRepository postRepo;
+    DisBoardPostService postService;
 
     //get all posts
     @GetMapping("/allPosts")
     public List<DisBoardPost> getAllPosts(){
-        return postRepo.findAll();
+        return postService.getAllPosts();
     }
 
     //create a new Post
     @PostMapping("/posts")
-    public DisBoardPost createNode(@RequestBody DisBoardPost post){
-        return postRepo.save(post);
+    public DisBoardPost addPost(@RequestBody DisBoardPost post){
+        return postService.addPost(post);
     }
 }

@@ -1,5 +1,6 @@
 package com.laioffer.cmtyMgmtSys.entity;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -23,9 +24,7 @@ public class DisBoardPost implements Serializable {
     @CreatedDate
     private Date postTime;
 
-
-    @ManyToOne
-    @JoinColumn(name = "resident_ID")
+    @CreatedBy
     private Resident resident;
 
 
