@@ -23,11 +23,11 @@ public class DisBoardPost implements Serializable {
     @CreatedDate
     private Date postTime;
 
-    /*
+
     @ManyToOne
     @JoinColumn(name = "resident_ID")
     private Resident resident;
-     */
+
 
     public int getId() {
         return id;
@@ -69,7 +69,7 @@ public class DisBoardPost implements Serializable {
         this.postTime = postTime;
     }
 
-    /*
+
     public Resident getResident() {
         return resident;
     }
@@ -77,5 +77,4 @@ public class DisBoardPost implements Serializable {
     public void setResident(Resident resident) {
         this.resident = resident;
     }
-     */
 }
