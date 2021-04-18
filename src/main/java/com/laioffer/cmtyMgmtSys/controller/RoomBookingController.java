@@ -17,7 +17,7 @@ public class RoomBookingController {
     @Autowired
     private RoomBookingRepository roomBookingRepository;
 
-    @GetMapping("events")
+    @GetMapping("/events")
     public List<RoomBooking> getEvents() {
         return this.roomBookingRepository.findAll();
     }
