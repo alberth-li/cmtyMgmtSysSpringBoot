@@ -11,7 +11,7 @@ public class Resident implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String phone;
@@ -27,11 +27,11 @@ public class Resident implements Serializable{
     @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ServiceRequest> ServiceRequests;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

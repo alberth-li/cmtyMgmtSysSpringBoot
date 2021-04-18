@@ -10,18 +10,23 @@ public class CommonRoom implements Serializable{
     private static final long serialVersionUID = 2652327633296064143L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
     private String name;
     @Enumerated(EnumType.STRING)
     private CommonRoomType type;
 
-    @OneToMany(mappedBy = "cRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<RoomBooking> bookings;
+    //with this it gives a stackoverflow error for roombooking findAll method
+//    @OneToMany(mappedBy = "cRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<RoomBooking> bookings;
 
     //getter and setters
-    public int getId() {return id;}
+    public Long getId() {
+        return id;
+    }
 
-    public void setId(int id) {this.id = id;}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {return name;}
 
@@ -31,7 +36,7 @@ public class CommonRoom implements Serializable{
 
     public void setType(CommonRoomType type) {this.type = type;}
 
-    public List<RoomBooking> getBookings() {return bookings;}
-
-    public void setBookings(List<RoomBooking> bookings) {this.bookings = bookings;}
+//    public List<RoomBooking> getBookings() {return bookings;}
+//
+//    public void setBookings(List<RoomBooking> bookings) {this.bookings = bookings;}
 }

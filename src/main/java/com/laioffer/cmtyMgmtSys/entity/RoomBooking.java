@@ -13,7 +13,7 @@ import java.util.Date;
 public class RoomBooking implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -26,21 +26,21 @@ public class RoomBooking implements Serializable {
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
-    private Date timeCrated;
+    private Date timeCreated;
 
     @ManyToOne
-    @JoinColumn(name = "CRoom_ID")
+    @JoinColumn(name = "room_id")
     private CommonRoom cRoom;
 
     @ManyToOne
-    @JoinColumn(name = "bookedByID")
+    @JoinColumn(name = "resident_id")
     private Resident booker;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -60,12 +60,12 @@ public class RoomBooking implements Serializable {
         this.endTime = endTime;
     }
 
-    public Date getTimeCrated() {
-        return timeCrated;
+    public Date getTimeCreated() {
+        return timeCreated;
     }
 
-    public void setTimeCrated(Date timeCrated) {
-        this.timeCrated = timeCrated;
+    public void setTimeCreated(Date timeCrated) {
+        this.timeCreated = timeCreated;
     }
 
     public CommonRoom getCommonRoom() {
