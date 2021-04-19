@@ -29,7 +29,7 @@ public class CmtyMgmtSysApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/signup").allowedOrigins("http://localhost:3000");
+				registry.addMapping("/**");
 			}
 		};
 	}
