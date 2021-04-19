@@ -41,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity webSecurity) throws Exception{
-        webSecurity.ignoring().antMatchers("/signup");
+        webSecurity.ignoring().antMatchers("/api/signup");
         webSecurity.ignoring().antMatchers("/error");
     }
 
@@ -70,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // Set permissions on endpoints
                 .authorizeRequests()
                 // Our public endpoints
-                .antMatchers("/login").permitAll()
+                .antMatchers("/api/login").permitAll()
                 // Our private endpoints
                 .anyRequest().authenticated();
                 /*
@@ -93,7 +93,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
+        //config.setAllowCredentials(true);
         config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
