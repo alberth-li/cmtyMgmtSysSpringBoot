@@ -24,7 +24,6 @@ public class UserController {
         return "sign-in";
 
 
-
     }
 
     @GetMapping("/sign-up")
@@ -35,9 +34,7 @@ public class UserController {
 
     @PostMapping("/signup")
     String signUp(@RequestBody User user) {
-
         userService.signUpUser(user);
-
         return "redirect:/login";
     }
 

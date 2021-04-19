@@ -7,6 +7,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+//TODO: DELETE unused imports
 
 
 import java.text.ParseException;
@@ -15,12 +16,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-
 @RestController
 @RequestMapping("/api")
 public class SchedulerController {
     @Autowired
     SchedulerService postService;
+    //TODO: name change.
 
     @GetMapping("/allRoomBookings")
     public List<RoomBooking> getAllRoomBookings() {
@@ -64,9 +65,5 @@ public class SchedulerController {
         Date end = format.parse(endTime);
         return postService.putByTime(id, start, end);
     }
-
-
-
 }
-
 

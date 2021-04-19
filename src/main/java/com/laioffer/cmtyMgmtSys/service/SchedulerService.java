@@ -25,7 +25,8 @@ import static java.time.temporal.TemporalAdjusters.previousOrSame;
 public class SchedulerService {
 
     @Autowired
-    SchedulerRepository postRepo2;
+    private SchedulerRepository postRepo2;
+    //TODO: schedulerRepo name change
 
 
     public List<RoomBooking> getAllBookings() {
@@ -59,8 +60,6 @@ public class SchedulerService {
 
         }
         return ret;
-
-
     }
 
 
@@ -79,7 +78,7 @@ public class SchedulerService {
         List<RoomBooking> all = postRepo2.findAll();
         List<RoomBooking> ret = null;
         for (RoomBooking booking : all) {
-            if(booking.getCommonRoom().getId().equals(room_id)
+            if(booking.getCRoom().getId().equals(room_id)
                     && (past_sunday.compareTo(booking.getStartTime()) <= 0)
                     && (next_sunday.compareTo(booking.getEndTime()) > 0) ){
                 ret.add(booking);
@@ -124,7 +123,4 @@ public class SchedulerService {
             return "No record found";
         }
     }
-
-
-
 }
