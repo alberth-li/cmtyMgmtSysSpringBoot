@@ -24,6 +24,7 @@ public class CmtyMgmtSysApplication {
 		SpringApplication.run(CmtyMgmtSysApplication.class, args);
 	}
 
+	/*
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
@@ -33,5 +34,6 @@ public class CmtyMgmtSysApplication {
 			}
 		};
 	}
+	 */
 
 }
