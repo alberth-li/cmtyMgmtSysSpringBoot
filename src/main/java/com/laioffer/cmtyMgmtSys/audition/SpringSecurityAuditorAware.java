@@ -8,14 +8,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 
-public class SpringSecurityAuditorAware implements AuditorAware<User> {
+public class SpringSecurityAuditorAware implements AuditorAware<Long> {
     @Override
-    public Optional<User> getCurrentAuditor() {
-
-        return Optional.ofNullable(SecurityContextHolder.getContext())
+    public Optional<Long> getCurrentAuditor() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return Optional.of(user.getId());
+        /*
+                Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication)
                 .filter(Authentication::isAuthenticated)
                 .map(Authentication::getPrincipal)
                 .map(User.class::cast);
+         */
     }
 }
