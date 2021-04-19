@@ -28,12 +28,12 @@ public class UserController {
         return "sign-up";
     }
 
-    @PostMapping("/sign-up")
+    @PostMapping("/signup")
     String signUp(@RequestBody User user) {
 
         userService.signUpUser(user);
 
-        return "redirect:/sign-in";
+        return "redirect:/login";
     }
 
 
