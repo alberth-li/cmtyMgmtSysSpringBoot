@@ -17,14 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "api/public")
 public class AuthController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PostMapping(value = "login")
+    @PostMapping(value = "/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request){
         try {
             Authentication authenticate = authenticationManager
@@ -36,10 +35,11 @@ public class AuthController {
 
             final User user = (User) authenticate.getPrincipal();
 
+            String token = jwtTokenUtil.generateToken(user);
             return ResponseEntity.ok()
                     .header(
                             HttpHeaders.AUTHORIZATION,
-                            jwtTokenUtil.generateToken(user)
+                            token
                     ).build();
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

@@ -28,7 +28,6 @@ public class UserController {
         return "sign-up";
     }
 
-    /*
     @PostMapping("/sign-up")
     String signUp(@RequestBody User user) {
 
@@ -36,9 +35,9 @@ public class UserController {
 
         return "redirect:/sign-in";
     }
-    */
 
 
+    /*
     @GetMapping("/confirm")
     String confirmMail(@RequestParam("token") String token) {
 
@@ -48,4 +47,5 @@ public class UserController {
 
         return "/sign-in";
     }
+     */
 }

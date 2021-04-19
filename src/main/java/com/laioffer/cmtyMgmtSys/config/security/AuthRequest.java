@@ -1,5 +1,6 @@
 package com.laioffer.cmtyMgmtSys.config.security;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 

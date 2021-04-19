@@ -32,6 +32,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // Get authorization header
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
+        //if header is null
+        if (header == null) {
+            chain.doFilter(request, response);
+            return;
+        }
         //validate header
         if (header.isEmpty() || ! header.startsWith("Bearer ")) {
             chain.doFilter(request, response);
@@ -52,20 +57,17 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         //get the UserDetails from username decrypted from the token
         if (username != null) {
             UserDetails userDetails = this.userService.loadUserByUsername(username);
-            //if validate
-            if (jwtTokenUtil.validate(username, userDetails)) {
-                UsernamePasswordAuthenticationToken
-                        authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null,userDetails.getAuthorities()
-                );
-                authentication.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-                // After setting the Authentication in the context, we specify
-                // that the current user is authenticated. So it passes the
-                // Spring Security Configurations successfully.
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+            UsernamePasswordAuthenticationToken
+                    authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities()
+            );
+            authentication.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request)
+            );
+            // After setting the Authentication in the context, we specify
+            // that the current user is authenticated. So it passes the
+            // Spring Security Configurations successfully.
+            SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(request, response);
         }
     }
