@@ -1,6 +1,8 @@
 package com.laioffer.cmtyMgmtSys.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,15 +12,17 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "users")
+@Setter
+@Getter
 public class User implements UserDetails {
 
     private static final long serialVersionUID = 2681531852204068105L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String emailId;
+    private String email;
 
     private String password;
 
@@ -45,7 +49,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return emailId;
+        return email;
     }
 
     @Override
@@ -66,21 +70,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public Resident getResident() {
-        return resident;
-    }
-
-    public void setResident(Resident resident) {
-        this.resident = resident;
     }
 }

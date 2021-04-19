@@ -1,5 +1,7 @@
 package com.laioffer.cmtyMgmtSys.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -11,6 +13,8 @@ import java.util.Date;
 @Entity
 @Table(name = "disboardpost")
 @EntityListeners(AuditingEntityListener.class)
+@Setter
+@Getter
 public class DisBoardPost implements Serializable {
 
     @Id
@@ -25,7 +29,7 @@ public class DisBoardPost implements Serializable {
     private Date postTime;
 
     @CreatedBy
-    private Resident resident;
+    private User user;
 
 
     public int getId() {
@@ -66,14 +70,5 @@ public class DisBoardPost implements Serializable {
 
     public void setPostTime(Date postTime) {
         this.postTime = postTime;
-    }
-
-
-    public Resident getResident() {
-        return resident;
-    }
-
-    public void setResident(Resident resident) {
-        this.resident = resident;
     }
 }

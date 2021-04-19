@@ -6,14 +6,11 @@ import com.laioffer.cmtyMgmtSys.service.ConfirmationTokenService;
 import com.laioffer.cmtyMgmtSys.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@Controller
+@RestController
 public class UserController {
     @Autowired
     private UserService userService;
@@ -31,13 +28,16 @@ public class UserController {
         return "sign-up";
     }
 
+    /*
     @PostMapping("/sign-up")
-    String signUp(User user) {
+    String signUp(@RequestBody User user) {
 
         userService.signUpUser(user);
 
         return "redirect:/sign-in";
     }
+    */
+
 
     @GetMapping("/confirm")
     String confirmMail(@RequestParam("token") String token) {

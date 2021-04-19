@@ -20,14 +20,14 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    //private BCryptPasswordEncoder bCryptPasswordEncoder;
     private ConfirmationTokenService confirmationTokenService;
     private EmailSenderService emailSenderService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        final Optional<User> optionalUser = userRepository.findUserByEmailId(email);
+        final Optional<User> optionalUser = userRepository.findUserByEmail(email);
 
         if (optionalUser.isPresent()) {
             return optionalUser.get();
@@ -37,6 +37,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    /*
     public void signUpUser(User user){
 
         String encryptedPassword = bCryptPasswordEncoder.encode(user.getPassword());
@@ -49,6 +50,7 @@ public class UserService implements UserDetailsService {
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
     }
+     */
 
     public void sendConfirmationMail(String userMail, String token) {
 
@@ -72,6 +74,5 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
 
         confirmationTokenService.deleteConfirmationToken(confirmationToken.getId());
-
     }
 }
