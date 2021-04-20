@@ -3,14 +3,13 @@ package com.laioffer.cmtyMgmtSys.service;
 import com.laioffer.cmtyMgmtSys.dao.SchedulerRepository;
 import com.laioffer.cmtyMgmtSys.entity.CommonRoom;
 import com.laioffer.cmtyMgmtSys.entity.RoomBooking;
+import org.apache.commons.collections.functors.FalsePredicate;
 import org.apache.velocity.exception.ResourceNotFoundException;
+import org.bouncycastle.cert.crmf.ProofOfPossessionSigningKeyBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -25,19 +24,39 @@ import static java.time.temporal.TemporalAdjusters.previousOrSame;
 public class SchedulerService {
 
     @Autowired
-    private SchedulerRepository postRepo2;
-    //TODO: schedulerRepo name change
+    private SchedulerRepository schedulerRepo;
 
 
     public List<RoomBooking> getAllBookings() {
-        return postRepo2.findAll();
+        return schedulerRepo.findAll();
     }
 
 
     public Optional<RoomBooking> getBookingById(Long id) {
-        System.out.println(postRepo2.findById(id) + " " + postRepo2.findById(id).getClass());
-        return postRepo2.findById(id);
+        System.out.println(schedulerRepo.findById(id) + " " + schedulerRepo.findById(id).getClass());
+        return schedulerRepo.findById(id);
     }
+
+
+    public List<RoomBooking> getBookingByWeekByUser(Long user_id){
+
+        List<RoomBooking> all = schedulerRepo.findAll();
+        List<RoomBooking> ret = new ArrayList<>();;
+        for (RoomBooking booking : all) {
+            if(booking.getCreatedBy().equals(user_id)){
+
+                ret.add(booking);
+
+            }
+
+        }
+
+        return ret;
+
+    }
+
+
+
 
     public List<RoomBooking> getBookingByWeek(){
         Calendar c=Calendar.getInstance();
@@ -45,13 +64,12 @@ public class SchedulerService {
         c.set(Calendar.HOUR_OF_DAY,0);
         c.set(Calendar.MINUTE,0);
         c.set(Calendar.SECOND,0);
-
         Date past_sunday = (c.getTime());
         c.add(Calendar.DATE,7);
         Date next_sunday = (c.getTime());
 
-        List<RoomBooking> all = postRepo2.findAll();
-        List<RoomBooking> ret = null;
+        List<RoomBooking> all = schedulerRepo.findAll();
+        List<RoomBooking> ret = new ArrayList<>();;
         for (RoomBooking booking : all) {
             if((past_sunday.compareTo(booking.getStartTime()) <= 0)
                     && (next_sunday.compareTo(booking.getEndTime()) > 0) ){
@@ -63,7 +81,8 @@ public class SchedulerService {
     }
 
 
-    public List<RoomBooking> getBookingByWeekByRoom(Long room_id) {
+    public List<RoomBooking> getBookingByWeekByRoom(Long id) {
+
         Calendar c=Calendar.getInstance();
         c.set(Calendar.DAY_OF_WEEK,Calendar.SUNDAY);
         c.set(Calendar.HOUR_OF_DAY,0);
@@ -74,16 +93,16 @@ public class SchedulerService {
         c.add(Calendar.DATE,7);
         Date next_sunday = (c.getTime());
 
+        List<RoomBooking> all = schedulerRepo.findAll();
+        List<RoomBooking> ret = new ArrayList<>();
 
-        List<RoomBooking> all = postRepo2.findAll();
-        List<RoomBooking> ret = null;
         for (RoomBooking booking : all) {
-            if(booking.getCRoom().getId().equals(room_id)
-                    && (past_sunday.compareTo(booking.getStartTime()) <= 0)
+            if((past_sunday.compareTo(booking.getStartTime()) <= 0)
                     && (next_sunday.compareTo(booking.getEndTime()) > 0) ){
-                ret.add(booking);
+                if(booking.getCRoom() != null && booking.getCRoom().getId().equals(id)){
+                    ret.add(booking);
+                }
             }
-
         }
         return ret;
 
@@ -92,31 +111,31 @@ public class SchedulerService {
 
 
     public RoomBooking addNewRoomBooking(RoomBooking booking) {
-        return postRepo2.save(booking);
+        return schedulerRepo.save(booking);
     }
 
 
     public List<RoomBooking> deleteAll() {
-        List<RoomBooking> bookings = postRepo2.findAll();
-        postRepo2.deleteAll();
+        List<RoomBooking> bookings = schedulerRepo.findAll();
+        schedulerRepo.deleteAll();
         return bookings;
     }
 
     public String deleteById(Long id) {
-        if (!postRepo2.existsById(id)) {
+        if (!schedulerRepo.existsById(id)) {
             return "No Entry Found";
         } else {
-            postRepo2.deleteById(id);
+            schedulerRepo.deleteById(id);
             return "Delete Successfully";
         }
     }
 
     public String putByTime(Long id, Date start, Date end) {
-        if (postRepo2.existsById(id)) {
-            RoomBooking booking = postRepo2.findById(id).get();
+        if (schedulerRepo.existsById(id)) {
+            RoomBooking booking = schedulerRepo.findById(id).get();
             booking.setStartTime(start);
             booking.setEndTime(end);
-            postRepo2.save(booking);
+            schedulerRepo.save(booking);
 
             return "Booking time of id: " + id + " reset successfully";
         } else {

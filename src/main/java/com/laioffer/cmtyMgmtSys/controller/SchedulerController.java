@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 //TODO: DELETE unused imports
 
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,15 +35,27 @@ public class SchedulerController {
         return postService.getBookingById(id);
     }
 
+
     @GetMapping("/allWeekBookings")
     public List<RoomBooking> getAllWeekBookings(){
         return postService.getBookingByWeek();
     }
 
-    @GetMapping("/allWeekByRoomBookings")
+
+    @GetMapping("/allWeekByRoomBookingsByRoomID")
     public List<RoomBooking> getAllWeekBookings(Long room_id){
         return postService.getBookingByWeekByRoom(room_id);
     }
+
+
+
+    @GetMapping("/allWeekBookingsByUser")
+    public List<RoomBooking> getAllWeekBookingsByUser(Long user_id){
+        return postService.getBookingByWeekByUser(user_id);
+    }
+
+
+
 
     @PostMapping("/postNewRoomBooking")
     public RoomBooking addNewRoomBooking(@RequestBody RoomBooking booking) {
