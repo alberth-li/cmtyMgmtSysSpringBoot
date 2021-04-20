@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -22,24 +24,21 @@ public class RoomBookingController {
         return this.roomBookingService.getAllEvents();
     }
 
-    // create resident rest api
+    // create event rest api
     @PostMapping("/events")
     public RoomBooking createRoomBooking(@RequestBody RoomBooking event) {
         return this.roomBookingService.createRoomBooking(event);
     }
 
-    // update resident rest api
+    // update event rest api
     @PutMapping("/events/{id}")
-    public ResponseEntity<RoomBooking> updateRoomBooking(@PathVariable Long id, @RequestBody RoomBooking eventDetails) {
-        /*
-        RoomBooking event = roomBookingRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Event not exist with id: " + id));
-        event.setStartTime(eventDetails.getStartTime());
-        event.setEndTime(eventDetails.getEndTime());
-        event.setTimeCreated(eventDetails.getTimeCreated());
-        event.setCommonRoom(eventDetails.getCommonRoom());
-        event.setBooker(eventDetails.getBooker());
-         */
-        return ResponseEntity.ok(roomBookingService.updateRoomBookingById(id, eventDetails));
+    public RoomBooking updateRoomBooking(@PathVariable Long id, @RequestBody RoomBooking eventDetails) {
+        return this.roomBookingService.updateRoomBookingById(id, eventDetails);
+    }
+
+    // delete event rest api
+    @DeleteMapping("/events/{id}")
+    public ResponseEntity<Map<String, Boolean>> deleteRoomBooking(@PathVariable Long id) {
+        return this.roomBookingService.deleteRoomBooking(id);
     }
 }
