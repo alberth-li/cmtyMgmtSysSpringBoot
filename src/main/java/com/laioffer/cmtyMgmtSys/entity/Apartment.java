@@ -14,9 +14,6 @@ public class Apartment implements Serializable {
     private String aptNum;
     private boolean avail;
 
-    @OneToMany(mappedBy = "apartment", cascade = CascadeType.ALL)
-    private List<Resident> residents;
-
     public int getId() {
         return id;
     }
@@ -29,10 +26,6 @@ public class Apartment implements Serializable {
         return avail;
     }
 
-    public List<Resident> getResidents() {
-        return residents;
-    }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -43,9 +36,5 @@ public class Apartment implements Serializable {
 
     public void setAvail(boolean avail) {
         this.avail = avail;
-    }
-
-    public void setResidents(List<Resident> residents) {
-        this.residents = residents;
     }
 }
