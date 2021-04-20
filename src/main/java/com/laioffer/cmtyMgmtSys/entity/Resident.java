@@ -1,5 +1,8 @@
 package com.laioffer.cmtyMgmtSys.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.OptimisticLock;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -17,8 +20,10 @@ public class Resident implements Serializable{
     private String phone;
     private String preferredName;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(unique = true)//unique foreign key make sure it is one-to-one
+    @ManyToOne
+    @JoinColumn(name = "user_id", unique = true)//unique foreign key make sure it is one-to-one
+    @OptimisticLock(excluded = true)
+    @JsonBackReference
     private User user;
 
     @ManyToOne()

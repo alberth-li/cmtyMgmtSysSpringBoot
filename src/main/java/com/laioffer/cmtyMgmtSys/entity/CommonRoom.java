@@ -15,10 +15,6 @@ public class CommonRoom implements Serializable{
     @Enumerated(EnumType.STRING)
     private CommonRoomType type;
 
-    //with this it gives a stackoverflow error for roombooking findAll method
-//    @OneToMany(mappedBy = "cRoom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<RoomBooking> bookings;
-
     //getter and setters
     public Long getId() {
         return id;
@@ -36,7 +32,4 @@ public class CommonRoom implements Serializable{
 
     public void setType(CommonRoomType type) {this.type = type;}
 
-//    public List<RoomBooking> getBookings() {return bookings;}
-//
-//    public void setBookings(List<RoomBooking> bookings) {this.bookings = bookings;}
 }
