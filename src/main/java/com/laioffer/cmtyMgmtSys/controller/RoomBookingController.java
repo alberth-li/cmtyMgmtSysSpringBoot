@@ -1,24 +1,14 @@
 package com.laioffer.cmtyMgmtSys.controller;
 
-import com.laioffer.cmtyMgmtSys.config.dto.UpdateResponse;
-import com.laioffer.cmtyMgmtSys.dao.ResidentRepository;
-import com.laioffer.cmtyMgmtSys.dao.RoomBookingRepository;
+import com.laioffer.cmtyMgmtSys.dto.UpdateResponse;
 import com.laioffer.cmtyMgmtSys.dto.RoomBookingPost;
-import com.laioffer.cmtyMgmtSys.entity.Resident;
-import com.laioffer.cmtyMgmtSys.entity.RoomBooking;
-import com.laioffer.cmtyMgmtSys.entity.User;
 import com.laioffer.cmtyMgmtSys.service.RoomBookingService;
 import com.laioffer.cmtyMgmtSys.vo.RoomBookingView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import org.apache.velocity.exception.ResourceNotFoundException;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
