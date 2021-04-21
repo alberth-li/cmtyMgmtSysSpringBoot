@@ -1,6 +1,6 @@
 package com.laioffer.cmtyMgmtSys.service;
 
-import com.laioffer.cmtyMgmtSys.config.dto.UpdateResponse;
+import com.laioffer.cmtyMgmtSys.dto.UpdateResponse;
 import com.laioffer.cmtyMgmtSys.dao.CommonRoomRepository;
 import com.laioffer.cmtyMgmtSys.dao.RoomBookingRepository;
 import com.laioffer.cmtyMgmtSys.dto.RoomBookingPost;
@@ -10,15 +10,11 @@ import com.laioffer.cmtyMgmtSys.entity.User;
 import com.laioffer.cmtyMgmtSys.vo.RoomBookingView;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class RoomBookingService {
