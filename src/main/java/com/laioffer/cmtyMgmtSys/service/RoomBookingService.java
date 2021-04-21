@@ -50,19 +50,23 @@ public class RoomBookingService {
     }
 
     private RoomBooking toRoomBooking(RoomBookingPost post){
-        Optional<RoomBooking> target = roomBookingRepository.findById(post.getId());
+
+        //Optional<RoomBooking> target = roomBookingRepository.findById(post.getId());
         RoomBooking result;
+        /*
         if(target.isPresent()){
             result = target.get();
             result.setStartTime(post.getStartTime());
             result.setEndTime(post.getEndTime());
             result.setCommonRoom(commonRoomRepository.findById(post.getRoom().getId()).get());
         }else{
-            result = new RoomBooking();
-            result.setStartTime(post.getStartTime());
-            result.setEndTime(post.getEndTime());
-            result.setCommonRoom(commonRoomRepository.findById(post.getId()).get());
+
         }
+         */
+        result = new RoomBooking();
+        result.setStartTime(post.getStartTime());
+        result.setEndTime(post.getEndTime());
+        result.setCommonRoom(commonRoomRepository.findById(post.getRoom().getId()).get());
         return result;
     }
 

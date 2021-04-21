@@ -9,8 +9,6 @@ import java.util.Date;
 
 @Data
 public class RoomBookingPost {
-    @JsonProperty("id")
-    Long id;
     @JsonProperty("startTime")
     Date startTime;
 
