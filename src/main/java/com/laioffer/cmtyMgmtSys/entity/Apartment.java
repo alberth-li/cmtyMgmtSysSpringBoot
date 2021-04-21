@@ -1,11 +1,16 @@
 package com.laioffer.cmtyMgmtSys.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "apartment")
+@Getter
+@Setter
 public class Apartment implements Serializable {
 
     @Id
@@ -13,28 +18,4 @@ public class Apartment implements Serializable {
     private int id;
     private String aptNum;
     private boolean avail;
-
-    public int getId() {
-        return id;
-    }
-
-    public String getAptNum() {
-        return aptNum;
-    }
-
-    public boolean isAvail() {
-        return avail;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setAptNum(String aptNum) {
-        this.aptNum = aptNum;
-    }
-
-    public void setAvail(boolean avail) {
-        this.avail = avail;
-    }
 }
