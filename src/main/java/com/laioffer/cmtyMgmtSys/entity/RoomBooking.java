@@ -14,7 +14,7 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 @Setter
 @Getter
-public class RoomBooking implements Serializable {
+public class RoomBooking extends Auditable<Long> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -27,16 +27,7 @@ public class RoomBooking implements Serializable {
     @Column(nullable = false)
     private Date endTime;
 
-    @Column(nullable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    @CreatedDate
-    private Date timeCreated;
-
     @ManyToOne
     @JoinColumn(name = "room_id")
-    private CommonRoom commonRoom;
-
-    @ManyToOne
-    @JoinColumn(name = "resident_id")
-    private Resident booker;
+    private CommonRoom cRoom;
 }
