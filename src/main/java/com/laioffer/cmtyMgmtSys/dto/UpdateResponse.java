@@ -1,4 +1,4 @@
-package com.laioffer.cmtyMgmtSys.config.dto;
+package com.laioffer.cmtyMgmtSys.dto;
 
 public class UpdateResponse {
     Boolean success;
