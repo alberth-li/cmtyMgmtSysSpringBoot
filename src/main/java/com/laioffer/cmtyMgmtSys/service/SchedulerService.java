@@ -3,11 +3,14 @@ package com.laioffer.cmtyMgmtSys.service;
 import com.laioffer.cmtyMgmtSys.dao.SchedulerRepository;
 import com.laioffer.cmtyMgmtSys.entity.CommonRoom;
 import com.laioffer.cmtyMgmtSys.entity.RoomBooking;
+import com.laioffer.cmtyMgmtSys.entity.User;
 import org.apache.commons.collections.functors.FalsePredicate;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.bouncycastle.cert.crmf.ProofOfPossessionSigningKeyBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,20 +42,14 @@ public class SchedulerService {
 
 
     public List<RoomBooking> getBookingByWeekByUser(Long user_id){
-
         List<RoomBooking> all = schedulerRepo.findAll();
         List<RoomBooking> ret = new ArrayList<>();;
         for (RoomBooking booking : all) {
             if(booking.getCreatedBy().equals(user_id)){
-
                 ret.add(booking);
-
             }
-
         }
-
         return ret;
-
     }
 
 
@@ -110,8 +107,31 @@ public class SchedulerService {
 
 
 
-    public RoomBooking addNewRoomBooking(RoomBooking booking) {
-        return schedulerRepo.save(booking);
+    public RoomBooking addNewRoomBooking(RoomBooking newRoomBooking) {
+
+        Long room_id = newRoomBooking.getCRoom().getId();
+        Timestamp new_start = new Timestamp(newRoomBooking.getStartTime().getTime());
+        Timestamp new_end = new Timestamp(newRoomBooking.getStartTime().getTime());
+
+        List<RoomBooking> allweek_booking = getBookingByWeekByRoom(room_id);
+        for (RoomBooking booking : allweek_booking) {
+            Timestamp cur_start = new Timestamp(booking.getStartTime().getTime());
+            Timestamp cur_end = new Timestamp(booking.getEndTime().getTime());
+            //check time overlap with other bookings
+            if ( (new_end.compareTo(cur_start) < 0) ){
+                System.out.println("time conflict for other booking");
+                return null;
+
+                // throw new Exception("time conflict for other booking");
+            }else if(new_start.compareTo(cur_end) < 0){
+                System.out.println("time conflict for other booking");
+                return null;
+
+                // throw new Exception("time conflict for other booking");
+            }
+        }
+
+        return schedulerRepo.save(newRoomBooking);
     }
 
 
@@ -122,24 +142,82 @@ public class SchedulerService {
     }
 
     public String deleteById(Long id) {
-        if (!schedulerRepo.existsById(id)) {
-            return "No Entry Found";
-        } else {
-            schedulerRepo.deleteById(id);
-            return "Delete Successfully";
+
+        Long username = 12345678910L;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof User) {
+            username = ((User) principal).getId();
         }
+
+        RoomBooking target = schedulerRepo.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Event not exist with id: " + id));
+        if (target.getCreatedBy().equals(username)) {
+
+            schedulerRepo.deleteById(id);
+            return ("deleted successfully");
+
+
+        }
+        return ("not allowed to delete");
+
+
+
     }
 
-    public String putByTime(Long id, Date start, Date end) {
-        if (schedulerRepo.existsById(id)) {
-            RoomBooking booking = schedulerRepo.findById(id).get();
-            booking.setStartTime(start);
-            booking.setEndTime(end);
-            schedulerRepo.save(booking);
+//    public String putByTime(Long id, Date start, Date end) {
+//        if (schedulerRepo.existsById(id)) {
+//            RoomBooking booking = schedulerRepo.findById(id).get();
+//            booking.setStartTime(start);
+//            booking.setEndTime(end);
+//            schedulerRepo.save(booking);
+//
+//            return "Booking time of id: " + id + " reset successfully";
+//        } else {
+//            return "No record found";
+//        }
+//    }
 
-            return "Booking time of id: " + id + " reset successfully";
-        } else {
-            return "No record found";
+
+    public RoomBooking updateRoomBookingById(Long id,RoomBooking newRoomBooking) {
+
+        Long username = 12345678910L;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof User) {
+            username = ((User) principal).getId();
         }
+
+        RoomBooking target = schedulerRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not exist with id: " + id));
+
+        if (target.getCreatedBy().equals(username)){
+            Long room_id = newRoomBooking.getCRoom().getId();
+            Timestamp new_start = new Timestamp(newRoomBooking.getStartTime().getTime());
+            Timestamp new_end = new Timestamp(newRoomBooking.getStartTime().getTime());
+
+            List<RoomBooking> allweek_booking = getBookingByWeekByRoom(room_id);
+            for (RoomBooking booking : allweek_booking) {
+                Timestamp cur_start = new Timestamp(booking.getStartTime().getTime());
+                Timestamp cur_end = new Timestamp(booking.getEndTime().getTime());
+                //check time overlap with other bookings
+                if ( (new_end.compareTo(cur_start) < 0) ){
+                    return target;
+                    // throw new Exception("time conflict for other booking");
+                }else if(new_start.compareTo(cur_end) < 0){
+                    return target;
+                    // throw new Exception("time conflict for other booking");
+                }
+            }
+
+            RoomBooking updatedRoomBooking = newRoomBooking;
+            updatedRoomBooking.setId(id);
+            System.out.println("changed!");
+
+            return schedulerRepo.save(updatedRoomBooking);
+
+        }
+
+       // throw new Exception("user_id not allowed for update");
+        return target;
     }
 }
+

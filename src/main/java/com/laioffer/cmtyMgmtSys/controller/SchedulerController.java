@@ -67,17 +67,30 @@ public class SchedulerController {
         return "Number of Entries Deleted: " + postService.deleteAll().size();
     }
 
-    @DeleteMapping("/deleteAllRoomBooking/id")
+    @DeleteMapping("/deleteRoomBooking/id")
     public String deleteRoomBooking(Long id) {
         return postService.deleteById(id);
     }
 
-    @PutMapping ("/putRoomBooking/id")
-    public String putRoomBooking(Long id, String startTime, String endTime) throws ParseException {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Date start = format.parse(startTime);
-        Date end = format.parse(endTime);
-        return postService.putByTime(id, start, end);
+//    @PutMapping ("/putRoomBooking/id")
+//    public String putRoomBooking(Long id, String startTime, String endTime) throws ParseException {
+//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//        Date start = format.parse(startTime);
+//        Date end = format.parse(endTime);
+//        return postService.putByTime(id, start, end);
+//    }
+
+
+
+
+    @PutMapping("/putRoomBookingbyID/{id}")
+    public ResponseEntity<RoomBooking> updateRoomBookingById(@PathVariable Long id, @RequestBody RoomBooking eventDetails) {
+
+        return ResponseEntity.ok(postService.updateRoomBookingById(id, eventDetails));
+
     }
+
+
+
 }
 
