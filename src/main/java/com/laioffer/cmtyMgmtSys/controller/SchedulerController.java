@@ -1,4 +1,5 @@
 package com.laioffer.cmtyMgmtSys.controller;
+/*
 import com.laioffer.cmtyMgmtSys.dao.SchedulerRepository;
 import com.laioffer.cmtyMgmtSys.entity.DisBoardPost;
 import com.laioffer.cmtyMgmtSys.entity.RoomBooking;
@@ -64,9 +65,6 @@ public class SchedulerController {
         Date end = format.parse(endTime);
         return postService.putByTime(id, start, end);
     }
-
-
-
 }
-
+*/
 

@@ -1,56 +1,109 @@
 package com.laioffer.cmtyMgmtSys.service;
 
 import com.laioffer.cmtyMgmtSys.config.dto.UpdateResponse;
+import com.laioffer.cmtyMgmtSys.dao.CommonRoomRepository;
 import com.laioffer.cmtyMgmtSys.dao.RoomBookingRepository;
+import com.laioffer.cmtyMgmtSys.dto.RoomBookingPost;
 import com.laioffer.cmtyMgmtSys.entity.CommonRoom;
 import com.laioffer.cmtyMgmtSys.entity.RoomBooking;
+import com.laioffer.cmtyMgmtSys.entity.User;
+import com.laioffer.cmtyMgmtSys.vo.RoomBookingView;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class RoomBookingService {
 
     @Autowired
     RoomBookingRepository roomBookingRepository;
-
-    public List<RoomBooking> getAllEvents(){
-        return roomBookingRepository.findAll();
+    @Autowired
+    CommonRoomRepository commonRoomRepository;
+    private Long curUserId = 1L;
+    private void findCurUser(){
+        Object curPrincipal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (curPrincipal instanceof User) {
+            curUserId = ((User) curPrincipal).getId();
+        }
     }
 
-    public RoomBooking createRoomBooking(RoomBooking roomBooking){
-        return roomBookingRepository.save(roomBooking);
+    public List<RoomBookingView> getAllEvents() {
+        List<RoomBookingView> result = new ArrayList<>();
+        for (RoomBooking rb:roomBookingRepository.findAll()
+             ) {
+            result.add(new RoomBookingView(rb));
+        }
+        return result;
     }
 
-    public Map<String, UpdateResponse> updateRoomBookingById(Long id, RoomBooking newRoomBooking, Long currentUserId){
+    public RoomBookingPost createRoomBooking(RoomBookingPost roomBookingRequest) {
+        roomBookingRepository.save(toRoomBooking(roomBookingRequest));
+        return roomBookingRequest;
+    }
+
+    private RoomBooking toRoomBooking(RoomBookingPost post){
+        Optional<RoomBooking> target = roomBookingRepository.findById(post.getId());
+        RoomBooking result;
+        if(target.isPresent()){
+            result = target.get();
+            result.setStartTime(post.getStartTime());
+            result.setEndTime(post.getEndTime());
+            result.setCommonRoom(commonRoomRepository.findById(post.getRoom().getId()).get());
+        }else{
+            result = new RoomBooking();
+            result.setStartTime(post.getStartTime());
+            result.setEndTime(post.getEndTime());
+            result.setCommonRoom(commonRoomRepository.findById(post.getId()).get());
+        }
+        return result;
+    }
+
+    /*
+    private RoomBookingView toRoomBookingView(RoomBooking booking){
+        RoomBookingView result = new RoomBookingView();
+        result.setId(booking.getId());
+        result.getUser().setId(booking.getCreatedBy());
+        result.setCreatedDate(booking.getCreatedDate());
+        result.setStartTime(booking.getStartTime());
+        result.setEndTime(booking.getEndTime());
+        result.getRoom().setId(booking.getCRoom().getId());
+        return result;
+    }
+     */
+
+    public Map<String, UpdateResponse> updateRoomBookingById(Long id, RoomBookingPost updateRequest) {
+        //get the RoomBooking Entity that it want to modify
         RoomBooking target = roomBookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Event not exist with id: " + id));
+
         Map<String, UpdateResponse> response = new HashMap<>();
-        if (!hasAccess(newRoomBooking.getBooker().getUser().getId(), currentUserId)){
-            response.put("updated", new UpdateResponse(Boolean.FALSE,"You can only update your own bookings."));
-        } else if (hasOverlap(newRoomBooking)){
-            response.put("updated", new UpdateResponse(Boolean.FALSE,"Room is not available for the given time period."));
+        if (! hasAccess(updateRequest.getUser().getId(),curUserId)) {
+            response.put("updated", new UpdateResponse(Boolean.FALSE, "You can only update your own bookings."));
+        } else if (hasOverlap(updateRequest)) {
+            response.put("updated", new UpdateResponse(Boolean.FALSE, "Room is not available for the given time period."));
         } else {
-            target.setCommonRoom(newRoomBooking.getCommonRoom());
-            target.setStartTime(newRoomBooking.getStartTime());
-            target.setEndTime(newRoomBooking.getEndTime());
+            target.setCommonRoom(commonRoomRepository.findById(updateRequest.getRoom().getId()).get());
+            target.setStartTime(updateRequest.getStartTime());
+            target.setEndTime(updateRequest.getEndTime());
             roomBookingRepository.save(target);
-            response.put("updated", new UpdateResponse(Boolean.TRUE,null));
+            response.put("updated", new UpdateResponse(Boolean.TRUE, null));
         }
         return response;
     }
 
-    public Map<String, Boolean> deleteRoomBooking(@PathVariable Long id, Long currentUserId) {
+    public Map<String, Boolean> deleteRoomBooking(@PathVariable Long id) {
         RoomBooking event = roomBookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Event not exist with id: " + id));
         Map<String, Boolean> response = new HashMap<>();
-        if (!hasAccess(event.getBooker().getUser().getId(), currentUserId)) {
+        if (! hasAccess(event.getCreatedBy(), curUserId)) {
             response.put("deleted", Boolean.FALSE);
         } else {
             roomBookingRepository.delete(event);
@@ -63,23 +116,23 @@ public class RoomBookingService {
         return Objects.nonNull(userId) && Objects.nonNull(currentUserId) && userId.equals(currentUserId);
     }
 
-    private boolean hasOverlap(RoomBooking newRoomBooking) {
-        Date startDate = newRoomBooking.getStartTime();
-        Date endDate = newRoomBooking.getEndTime();
-        CommonRoom room = newRoomBooking.getCommonRoom();
+    private boolean hasOverlap(RoomBookingPost updateRequest) {
+        Date startDate = updateRequest.getStartTime();
+        Date endDate = updateRequest.getEndTime();
+        CommonRoom room = commonRoomRepository.findById(updateRequest.getRoom().getId()).get();
         List<RoomBooking> bookings = roomBookingRepository.findAllByCommonRoomAndStartTimeLessThanAndEndTimeGreaterThan(room, startDate, startDate);
-        if (!bookings.isEmpty()) {
+        if (! bookings.isEmpty()) {
             return true;
         }
         bookings = roomBookingRepository.findAllByCommonRoomAndStartTimeLessThanAndEndTimeGreaterThan(room, endDate, endDate);
-        if (!bookings.isEmpty()) {
+        if (! bookings.isEmpty()) {
             return true;
         }
         bookings = roomBookingRepository.findAllByCommonRoomAndStartTimeGreaterThanAndEndTimeLessThan(room, startDate, endDate);
-        if (!bookings.isEmpty()) {
+        if (! bookings.isEmpty()) {
             return true;
         }
         bookings = roomBookingRepository.findAllByCommonRoomAndStartTimeEqualsOrCommonRoomAndEndTimeEquals(room, startDate, room, endDate);
-        return !bookings.isEmpty();
+        return ! bookings.isEmpty();
     }
 }

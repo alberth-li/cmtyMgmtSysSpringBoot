@@ -3,10 +3,12 @@ package com.laioffer.cmtyMgmtSys.controller;
 import com.laioffer.cmtyMgmtSys.config.dto.UpdateResponse;
 import com.laioffer.cmtyMgmtSys.dao.ResidentRepository;
 import com.laioffer.cmtyMgmtSys.dao.RoomBookingRepository;
+import com.laioffer.cmtyMgmtSys.dto.RoomBookingPost;
 import com.laioffer.cmtyMgmtSys.entity.Resident;
 import com.laioffer.cmtyMgmtSys.entity.RoomBooking;
 import com.laioffer.cmtyMgmtSys.entity.User;
 import com.laioffer.cmtyMgmtSys.service.RoomBookingService;
+import com.laioffer.cmtyMgmtSys.vo.RoomBookingView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,31 +29,29 @@ public class RoomBookingController {
     @Autowired
     RoomBookingService roomBookingService;
 
-    @Autowired
-    private ResidentRepository residentRepository;
-
     @GetMapping("/events")
-    public List<RoomBooking> getEvents() {
+    public List<RoomBookingView> getEvents() {
         return this.roomBookingService.getAllEvents();
     }
 
     // create event rest api
     @PostMapping("/events")
-    public RoomBooking createRoomBooking(@RequestBody RoomBooking event) {
+    public RoomBookingPost createRoomBooking(@RequestBody RoomBookingPost event) {
         return this.roomBookingService.createRoomBooking(event);
     }
 
     // update event rest api
     @PutMapping("/events/{id}")
-    public ResponseEntity<String> updateRoomBooking(@PathVariable Long id, @RequestBody RoomBooking eventDetails) {
+    public ResponseEntity<String> updateRoomBooking(@PathVariable Long id, @RequestBody RoomBookingPost newRoomBooking) {
         //return this.roomBookingService.updateRoomBookingById(id, eventDetails);
+        /*
         Resident resident = eventDetails.getBooker();
+
         resident = residentRepository.findById(resident.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Resident not exist with id: " + id));
         eventDetails.setBooker(resident);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) (authentication.getPrincipal());
-        Map<String, UpdateResponse> res = this.roomBookingService.updateRoomBookingById(id, eventDetails, ((User) userDetails).getId());
+         */
+        Map<String, UpdateResponse> res = this.roomBookingService.updateRoomBookingById(id, newRoomBooking);
         if (!Boolean.TRUE.equals(res.get("updated").getSuccess())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(res.get("updated").getReason());
         }
@@ -61,9 +61,7 @@ public class RoomBookingController {
     // delete event rest api
     @DeleteMapping("/events/{id}")
     public ResponseEntity<String> deleteRoomBooking(@PathVariable Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) (authentication.getPrincipal());
-        Map<String, Boolean> res = this.roomBookingService.deleteRoomBooking(id, ((User) userDetails).getId());
+        Map<String, Boolean> res = this.roomBookingService.deleteRoomBooking(id);
         if (!Boolean.TRUE.equals(res.get("deleted"))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only delete your own bookings.");
         }

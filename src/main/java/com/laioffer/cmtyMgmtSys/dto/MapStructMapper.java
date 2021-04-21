@@ -5,5 +5,4 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface MapStructMapper {
-    RoomBooking roomBookingPostDtoToRoomBooking (RoomBookingPostDto roomBookingPostDto);
 }

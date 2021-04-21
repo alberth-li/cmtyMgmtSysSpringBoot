@@ -29,5 +29,5 @@ public class RoomBooking extends Auditable<Long> implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "room_id")
-    private CommonRoom cRoom;
+    private CommonRoom commonRoom;
 }

@@ -21,6 +21,7 @@ import java.util.*;
 
 import static java.time.temporal.TemporalAdjusters.nextOrSame;
 import static java.time.temporal.TemporalAdjusters.previousOrSame;
+/*
 @Service
 public class SchedulerService {
 
@@ -128,3 +129,5 @@ public class SchedulerService {
 
 
 }
+
+ */
