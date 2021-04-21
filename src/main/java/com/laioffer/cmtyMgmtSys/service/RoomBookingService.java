@@ -85,13 +85,14 @@ public class RoomBookingService {
 
     public Map<String, UpdateResponse> updateRoomBookingById(Long id, RoomBookingPost updateRequest) {
         //get the RoomBooking Entity that it want to modify
+        findCurUser();
         RoomBooking target = roomBookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Event not exist with id: " + id));
 
         Map<String, UpdateResponse> response = new HashMap<>();
-        if (! hasAccess(updateRequest.getUser().getId(),curUserId)) {
+        if (! hasAccess(target.getCreatedBy(),curUserId)) {
             response.put("updated", new UpdateResponse(Boolean.FALSE, "You can only update your own bookings."));
-        } else if (hasOverlap(updateRequest)) {
+        } else if (hasOverlap(target, updateRequest)) {
             response.put("updated", new UpdateResponse(Boolean.FALSE, "Room is not available for the given time period."));
         } else {
             target.setCommonRoom(commonRoomRepository.findById(updateRequest.getRoom().getId()).get());
@@ -104,6 +105,7 @@ public class RoomBookingService {
     }
 
     public Map<String, Boolean> deleteRoomBooking(@PathVariable Long id) {
+        findCurUser();
         RoomBooking event = roomBookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Event not exist with id: " + id));
         Map<String, Boolean> response = new HashMap<>();
@@ -120,9 +122,11 @@ public class RoomBookingService {
         return Objects.nonNull(userId) && Objects.nonNull(currentUserId) && userId.equals(currentUserId);
     }
 
-    private boolean hasOverlap(RoomBookingPost updateRequest) {
+    private boolean hasOverlap(RoomBooking target, RoomBookingPost updateRequest) {
         Date startDate = updateRequest.getStartTime();
         Date endDate = updateRequest.getEndTime();
+        Date originalStart = target.getStartTime();
+        Date originalEnd = target.getEndTime();
         CommonRoom room = commonRoomRepository.findById(updateRequest.getRoom().getId()).get();
         List<RoomBooking> bookings = roomBookingRepository.findAllByCommonRoomAndStartTimeLessThanAndEndTimeGreaterThan(room, startDate, startDate);
         if (! bookings.isEmpty()) {
@@ -137,6 +141,10 @@ public class RoomBookingService {
             return true;
         }
         bookings = roomBookingRepository.findAllByCommonRoomAndStartTimeEqualsOrCommonRoomAndEndTimeEquals(room, startDate, room, endDate);
-        return ! bookings.isEmpty();
+        if(startDate.equals(originalStart) || endDate.equals(originalEnd)){
+            return false;
+        }else{
+            return !bookings.isEmpty();
+        }
     }
 }
