@@ -1,6 +1,8 @@
 package com.laioffer.cmtyMgmtSys.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.OptimisticLock;
 
 import javax.persistence.*;
@@ -9,6 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "resident")
+@Getter
+@Setter
 public class Resident implements Serializable{
     private static final long serialVersionUID = 2652327633296064143L;
 
@@ -28,71 +32,4 @@ public class Resident implements Serializable{
 
     @ManyToOne()
     private Apartment apartment;
-
-    @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ServiceRequest> ServiceRequests;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getPreferredName() {
-        return preferredName;
-    }
-
-    public void setPreferredName(String preferredName) {
-        this.preferredName = preferredName;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Apartment getApartment() {
-        return apartment;
-    }
-
-    public void setApartment(Apartment apartment) {
-        this.apartment = apartment;
-    }
-
-    public List<ServiceRequest> getServiceRequests() {
-        return ServiceRequests;
-    }
-
-    public void setServiceRequests(List<ServiceRequest> serviceRequests) {
-        ServiceRequests = serviceRequests;
-    }
 }
